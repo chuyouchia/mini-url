@@ -1,52 +1,54 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { generateUniqueHashFromString } from "../../utils/generate-unique-hash";
-
-export const getUrlObjectFromUserInput = async (url: string) => {
-    return await prisma.urls.findUnique({
-      where: {
-        url: url,
-      }
-    });
-  }
-  
-  export const createUrlObject = async (url: string) => {
-    // keep retrying prisma create until hash is unique
+import { Urls } from '@prisma/client'
+import { prisma } from '../../db/prisma'
+/**
+ * Creates a shortened URL that is unique and inserts it into the database
+ */
+const createShortenedUrl = async (url: string): Promise<string> => {
+    
+    //run generate unique url until there is no matching ones
     while (true) {
-      try {
-        let hash = generateUniqueHashFromString(url);
-        return await prisma.urls.create({
-          data: {
-            url: url,
-            hash: hash,
-          }
-        });
-      } catch (error) {
-        // do nothing
-      }
+        const urlHash = generateUniqueHashFromString(url)
+        try {
+            await prisma.urls.create({data: {url: url, hash: urlHash}});
+            return urlHash;
+        } catch (error) {
+            // currently, do nothing - try until we get a valid url hash
+            
+            //TODO - maybe this should be thrown back as an error and limit server load
+        }
     }
-  }
-  
-  export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // guard clause against non post requests
-    if (req.method !== "POST") {
-      return res.status(405).json({ message: "Method Not Allowed" });
+}
+
+/**
+ * checks if there is a URL in the db with the matching hash
+ */
+const findMatchingUrls = async (url: string): Promise<Urls | null> => {
+    return await prisma.urls.findUnique({
+        where: {
+            url : url,
+        }});
+        
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') {
+        //if it isn't a post request, return not allowed
+        res.status(405).json({ error: 'METHOD NOT ALLOWED' })
     }
-  
-    // Get data from request
-    const data = req.body;
-    const { url } = data;
-  
-    // check if url already exists in db
-    const existingUrlObject = await getUrlObjectFromUserInput(url);
-  
-    let returnedUrlObject = existingUrlObject;
-  
-    // if url doesn't exist in db, create unique hash and insert into db
-    if (!existingUrlObject) {
-      returnedUrlObject = await createUrlObject(url);
+    const { url } = req.body;
+
+    // check if the original url exists as an entry in the DB
+    const redirectUrl = await findMatchingUrls(url);
+        
+    if (!redirectUrl){
+        const createdHash = await createShortenedUrl(url);
+        //return that shortened url if created        
+        res.status(200).json({ hash: createdHash })
+    } else {
+        // return the originally shortened url 
+        res.status(200).json({ hash: redirectUrl?.hash })
     }
-  
-    return res.status(200).json({
-      shortUrlHash: returnedUrlObject?.hash,
-    });
-  }
+
+}

@@ -23,7 +23,7 @@ export const useUrlForm = () => {
             });
 
             const json = await value.json();
-            setShortenedUrl(json.url);
+            setShortenedUrl(json.hash);
         } else {
             //show error message
             setUrlFormErrorMessage('Not a valid url!')
