@@ -17,6 +17,7 @@ test('invalid url will not make api requests', async () => {
         await hook.result.current.onSubmitUrl();
       });
     expect(hook.result.current.urlToBeShortened).toEqual('123');
+    expect(hook.result.current.urlFormErrorMessage).toBeTruthy();
     expect(mockApiRequest).toHaveBeenCalledTimes(0);
   });
 

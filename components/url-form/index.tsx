@@ -1,4 +1,4 @@
-import { Button, notification, Tooltip, Typography } from 'antd';
+import { Button, notification, Spin, Tooltip, Typography } from 'antd';
 import Search from 'antd/lib/input/Search';
 import React from 'react';
 import { useUrlForm } from './hooks/use-url-form';
@@ -29,32 +29,30 @@ export function UrlForm(): JSX.Element {
         const json = await value.json();
         return json as Urls
     }
-    const {shortenedUrl, setUrlToBeShortened, onSubmitUrl, urlFormErrorMessage} = useUrlForm({ getShortenedUrl: createShortenedUrl});
+    const {
+        shortenedUrl, 
+        setUrlToBeShortened, 
+        isLoadingShortenedUrl, 
+        onSubmitUrl, 
+        urlFormErrorMessage
+    } = useUrlForm({ getShortenedUrl: createShortenedUrl});
 
     return (
     <form style={{minWidth: '800px'}}>
-        {/* <input type="text" onChange={(event) => setUrlToBeShortened(event.target.value)} /><br /> */}
-        {/* <Input.Group>
-            <Input style={{ width: 'calc(100% - 20%)' }}
-                placeholder="Enter your url here" 
-                allowClear
-                onChange={(event) => setUrlToBeShortened(event.target.value)} 
-            />
-            <Button type="primary" onClick={onSubmitUrl}>Shorten it!</Button>
-        </Input.Group> */}
         <Search
         style={{ width: 'calc(100% - 20%)' }}
-      placeholder="Enter your url here"
-      allowClear
-      enterButton="Shorten it!"
-      size="large"
-      onChange={(event) => setUrlToBeShortened(event.target.value)}
-      onSearch={onSubmitUrl}
-    />
-    <br/>
-       { shortenedUrl && (
-       
-       <Title level={3} >
+            placeholder="Enter your url here"
+            allowClear
+            enterButton="Shorten it!"
+            size="large"
+            onChange={(event) => setUrlToBeShortened(event.target.value)}
+            onSearch={onSubmitUrl}
+        />
+        <br/>
+   { isLoadingShortenedUrl?  <Spin />: 
+   <>
+   { shortenedUrl && (
+    <Title level={3} >
         <br/>Shortened URL: <Text type="success">
             {shortenedUrl} 
             </Text>
@@ -65,17 +63,20 @@ export function UrlForm(): JSX.Element {
                     }}/>} />
             </Tooltip>
         <br/>
+    </Title>
+   )}
+    { urlFormErrorMessage && (
+        <Title level={3} >
+            <br/>
+            Error: <Text type="warning">
+            {urlFormErrorMessage}
+            </Text>
+            <br />
         </Title>
-       )}
-        { urlFormErrorMessage && (
-            <Title level={3} >
-                <br/>
-                Error: <Text type="warning">
-                {urlFormErrorMessage}
-                </Text>
-                <br />
-            </Title>
-            )}
+        )}
+    </>
+    }
+    
     </form>
     )
 }

@@ -3,7 +3,6 @@ import type { NextPage } from 'next'
 import { UrlForm } from '../components/url-form'
 import { Layout, Col, Row } from 'antd';
 const { Header, Footer, Content } = Layout;
-import 'antd/dist/antd.dark.css';
 
 const Home: NextPage = () => {
 
