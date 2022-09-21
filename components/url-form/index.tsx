@@ -3,6 +3,7 @@ import Search from 'antd/lib/input/Search';
 import React from 'react';
 import { useUrlForm } from './hooks/use-url-form';
 import { CopyOutlined } from '@ant-design/icons';
+import { Urls } from '@prisma/client';
 
 
 const { Text, Title } = Typography;
@@ -16,7 +17,19 @@ const openNotification = () => {
   };
 
 export function UrlForm(): JSX.Element {
-    const {shortenedUrl, setUrlToBeShortened, onSubmitUrl, urlFormErrorMessage} = useUrlForm();
+    const createShortenedUrl = async( urlToBeShortened: string): Promise<Urls> => {
+        const value = await fetch('/api/create-short-url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: urlToBeShortened }),
+        });
+    
+        const json = await value.json();
+        return json as Urls
+    }
+    const {shortenedUrl, setUrlToBeShortened, onSubmitUrl, urlFormErrorMessage} = useUrlForm({ getShortenedUrl: createShortenedUrl});
 
     return (
     <form style={{minWidth: '800px'}}>
