@@ -1,3 +1,26 @@
-# Fullstack Authentication Example with Next.js and NextAuth.js
+# Mini Url
+A URL shortener app for shareable links
 
-This is the starter project for the fullstack tutorial with Next.js and Prisma. You can find the final version of this project in the [`final`](https://github.com/prisma/blogr-nextjs-prisma/tree/final) branch of this repo.
+# Requirements
+
+You will need git, and npm to install this app locally.
+# Installation instructions
+```
+# Clone this repository
+$ git clone https://github.com/chuyouchia/mini-url.git
+
+# Go into the repository & install dependencies
+$ cd mini-url && npm install
+
+# Run the app locally. This should bring it up on localhost:3000
+$ npm run dev
+
+# Run tests
+$ npm test
+```
+# Tech Stack
+This app was built with:
+- [NextJs](https://nextjs.org/) - The React Framework for Production
+- [Typescript](https://www.typescriptlang.org/) - JavaScript with syntax for types
+- [Postgres](https://www.prisma.io/) - Next-generation Node.js and TypeScript ORM
+- [Postgres](https://www.postgresql.org/) - The World's Most Advanced Open Source Relational Database
