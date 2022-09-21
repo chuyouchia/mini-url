@@ -10,7 +10,6 @@ export const useUrlForm = () => {
     const [shortenedUrl, setShortenedUrl] = useState<string>();
 
     const [urlFormErrorMessage, setUrlFormErrorMessage] = useState<string>('');
-
     const onSubmitUrl = async () => {
         //validate if its a url
         if (isUrlValid(urlToBeShortened)){
@@ -24,9 +23,11 @@ export const useUrlForm = () => {
 
             const json = await value.json();
             setShortenedUrl(json.hash);
+            setUrlFormErrorMessage('');
         } else {
             //show error message
             setUrlFormErrorMessage('Not a valid url!')
+            setShortenedUrl('')
         }
         
     }
