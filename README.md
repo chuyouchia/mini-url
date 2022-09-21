@@ -22,5 +22,5 @@ $ npm test
 This app was built with:
 - [NextJs](https://nextjs.org/) - The React Framework for Production
 - [Typescript](https://www.typescriptlang.org/) - JavaScript with syntax for types
-- [Postgres](https://www.prisma.io/) - Next-generation Node.js and TypeScript ORM
+- [Prisma](https://www.prisma.io/) - Next-generation Node.js and TypeScript ORM
 - [Postgres](https://www.postgresql.org/) - The World's Most Advanced Open Source Relational Database
