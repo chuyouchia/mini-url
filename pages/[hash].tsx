@@ -27,7 +27,12 @@ export default function RedirectUrl(props: Props) {
 export const getServerSideProps = async (context:any) => {
     //get hash from the route passed
     const { hash } = context.params;
-
+    if (hash) {
+        return {
+            props: { redirectUrl: null },
+        }
+    }
+    
     // get the url from the server using the hash
     const redirectUrl = await prisma.urls.findUnique({
         where: {
