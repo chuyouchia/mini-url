@@ -15,14 +15,19 @@ export const useUrlForm = ({getShortenedUrl}: Props) => {
     const [shortenedUrl, setShortenedUrl] = useState<string>();
 
     const [urlFormErrorMessage, setUrlFormErrorMessage] = useState<string>('');
+
+    const [isLoadingShortenedUrl, setIsLoadingShortenedUrl] = useState<boolean>();
     
     const onSubmitUrl = async () => {
+        setIsLoadingShortenedUrl(true);
         //validate if its a url
         if (isUrlValid(urlToBeShortened)){
             const json = await getShortenedUrl(urlToBeShortened);
+            setIsLoadingShortenedUrl(false);
             setShortenedUrl(json.hash);
             setUrlFormErrorMessage('');
         } else {
+            setIsLoadingShortenedUrl(false);
             //show error message
             setUrlFormErrorMessage('Not a valid url!')
             setShortenedUrl('')
@@ -32,6 +37,7 @@ export const useUrlForm = ({getShortenedUrl}: Props) => {
 
     return {
         shortenedUrl,
+        isLoadingShortenedUrl,
         urlFormErrorMessage,
         urlToBeShortened,
         setUrlToBeShortened,
