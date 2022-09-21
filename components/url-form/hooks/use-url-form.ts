@@ -33,7 +33,7 @@ export const useUrlForm = ({getShortenedUrl}: Props) => {
         if (isUrlValid(urlToBeShortened)){
             const json = await getShortenedUrl(urlToBeShortened);
             setIsLoadingShortenedUrl(false);
-            setShortenedUrl(`${baseUrl}${json.hash}`);
+            setShortenedUrl(`${baseUrl}/${json.hash}`);
             setUrlFormErrorMessage('');
         } else {
             setIsLoadingShortenedUrl(false);
