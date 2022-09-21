@@ -11,7 +11,6 @@ export default function RedirectUrl(props: Props) {
     const { redirectUrl } = props;
     const router = useRouter();
 
-
     //window is not defined on pre-render, need to wait for the component to mount on the client
     useEffect(() => {
         if (redirectUrl) {
@@ -27,12 +26,12 @@ export default function RedirectUrl(props: Props) {
 export const getServerSideProps = async (context:any) => {
     //get hash from the route passed
     const { hash } = context.params;
-    if (hash) {
+    if (!hash) {
         return {
             props: { redirectUrl: null },
         }
     }
-    
+
     // get the url from the server using the hash
     const redirectUrl = await prisma.urls.findUnique({
         where: {
