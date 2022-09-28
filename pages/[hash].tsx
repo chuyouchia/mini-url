@@ -40,6 +40,26 @@ export const getServerSideProps = async (context:any) => {
             props: { redirectUrl: null },
         }
     }
+
+    //delete the url from the DB if the number of uses left is 0
+    if (redirectUrl.num_uses === 1) {
+        await prisma.urls.delete({
+            where: {
+              hash: hash,
+            },
+        })
+    } else {
+        //decrement it if it has more than 1 use left
+        await prisma.urls.update({
+            where: {
+              hash: hash,
+            },
+            data: {
+              num_uses: redirectUrl.num_uses - 1,
+            },
+          })
+          
+    }
     
     return {
         props: { redirectUrl: redirectUrl?.url },
