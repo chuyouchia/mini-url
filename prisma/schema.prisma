@@ -15,4 +15,5 @@ model Urls {
   createdAt DateTime @default(now())
   url       String @unique
   hash      String @unique
+  num_uses  Int @default(5)
 }

@@ -1,10 +1,9 @@
-import { Button, notification, Spin, Tooltip, Typography } from 'antd';
+import { Button, notification, Spin, Tooltip, Typography, InputNumber } from 'antd';
 import Search from 'antd/lib/input/Search';
 import React from 'react';
 import { useUrlForm } from './hooks/use-url-form';
 import { CopyOutlined } from '@ant-design/icons';
 import { Urls } from '@prisma/client';
-
 
 const { Text, Title } = Typography;
 
@@ -16,14 +15,19 @@ const openNotification = () => {
     });
   };
 
+export interface CreateShortenedUrlProps {
+    urlToBeShortened: string;
+    numOfUses: number;
+}
+
 export function UrlForm(): JSX.Element {
-    const createShortenedUrl = async( urlToBeShortened: string): Promise<Urls> => {
+    const createShortenedUrl = async( {urlToBeShortened, numOfUses}: CreateShortenedUrlProps): Promise<Urls> => {
         const value = await fetch('/api/create-short-url', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ url: urlToBeShortened }),
+            body: JSON.stringify({ url: urlToBeShortened, numOfUses }),
         });
     
         const json = await value.json();
@@ -34,7 +38,8 @@ export function UrlForm(): JSX.Element {
         setUrlToBeShortened, 
         isLoadingShortenedUrl, 
         onSubmitUrl, 
-        urlFormErrorMessage
+        urlFormErrorMessage,
+        setInputNumber
     } = useUrlForm({ getShortenedUrl: createShortenedUrl});
 
     return (
@@ -74,6 +79,12 @@ export function UrlForm(): JSX.Element {
             <br />
         </Title>
         )}
+        <Title level={3} >
+            <br/>Number of uses: <Text type="secondary">
+                <InputNumber min={1} max={10} defaultValue={3} onChange={(num) => setInputNumber(num)} />
+            </Text>
+            <br/>
+        </Title>
     </>
     }
     

@@ -3,10 +3,11 @@
 
 import { Urls } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { CreateShortenedUrlProps } from "..";
 import { isUrlValid } from "../../../utils/is-url-valid";
 
 interface Props {
-    getShortenedUrl: (url: string) => Promise<Urls>;
+    getShortenedUrl: (props: CreateShortenedUrlProps) => Promise<Urls>;
 }
 
 export const useUrlForm = ({getShortenedUrl}: Props) => {
@@ -27,11 +28,13 @@ export const useUrlForm = ({getShortenedUrl}: Props) => {
 
     const [isLoadingShortenedUrl, setIsLoadingShortenedUrl] = useState<boolean>();
     
+    const [inputNumber, setInputNumber] = useState<number>();
+
     const onSubmitUrl = async () => {
         setIsLoadingShortenedUrl(true);
         //validate if its a url
         if (isUrlValid(urlToBeShortened)){
-            const json = await getShortenedUrl(urlToBeShortened);
+            const json = await getShortenedUrl({urlToBeShortened, numOfUses: inputNumber});
             setIsLoadingShortenedUrl(false);
             setShortenedUrl(`${baseUrl}/${json.hash}`);
             setUrlFormErrorMessage('');
@@ -49,6 +52,7 @@ export const useUrlForm = ({getShortenedUrl}: Props) => {
         isLoadingShortenedUrl,
         urlFormErrorMessage,
         urlToBeShortened,
+        setInputNumber,
         setUrlToBeShortened,
         onSubmitUrl
     }
